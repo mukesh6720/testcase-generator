@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Testcase Generator</title>
+    <meta charset="UTF-8"/>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .card {
+            transition: background-color 0.3s, color 0.3s;
+        }
+    </style>
+</head>
+<body class="bg-light text-dark">
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            <!-- Title + Dark Mode Toggle -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="mb-0">🧪 Testcase Generator</h2>
+                <button id="toggleTheme" class="btn btn-outline-secondary btn-sm">
+                    🌙 Dark Mode
+                </button>
+            </div>
+
+            <!-- Input Form -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <form th:action="@{/generate}" method="post">
+                        <div class="mb-3">
+                            <label for="input" class="form-label">Requirement</label>
+                            <textarea id="input" name="input" rows="6"
+                                      class="form-control"
+                                      placeholder="Enter your requirement here..."></textarea>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                Generate Test Cases
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Results Table -->
+            <div th:if="${testCases}" class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="mb-3">Generated Test Cases</h4>
+                    <div class="table-responsive">
+                        <table id="resultsTable" class="table table-bordered table-striped align-middle">
+                            <thead class="table-dark">
+                            <tr>
+                                <th>TC_ID</th>
+                                <th>Test Scenario</th>
+                                <th>Steps to Reproduce</th>
+                                <th>Expected Result</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="tc : ${testCases}">
+                                <td th:text="${tc.tcId}"></td>
+                                <td th:text="${tc.testScenario}"></td>
+                                <td th:text="${tc.stepsToReproduce}"></td>
+                                <td th:text="${tc.expectedResult}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Dark Mode Toggle Script -->
+<script>
+    const toggleBtn = document.getElementById('toggleTheme');
+    const cards = document.querySelectorAll('.card');
+    const table = document.getElementById('resultsTable');
+
+    toggleBtn.addEventListener('click', () => {
+        document.body.classList.toggle('bg-light');
+        document.body.classList.toggle('text-dark');
+        document.body.classList.toggle('bg-dark');
+        document.body.classList.toggle('text-light');
+
+        // Toggle card styles
+        cards.forEach(card => {
+            card.classList.toggle('bg-dark');
+            card.classList.toggle('text-light');
+        });
+
+        // Toggle table header style
+        if (table) {
+            table.classList.toggle('table-dark');
+        }
+
+        // Update button text/icon
+        if (document.body.classList.contains('bg-dark')) {
+            toggleBtn.textContent = "☀️ Light Mode";
+            toggleBtn.classList.remove("btn-outline-secondary");
+            toggleBtn.classList.add("btn-outline-light");
+        } else {
+            toggleBtn.textContent = "🌙 Dark Mode";
+            toggleBtn.classList.remove("btn-outline-light");
+            toggleBtn.classList.add("btn-outline-secondary");
+        }
+    });
+</script>
+</body>
+</html>
